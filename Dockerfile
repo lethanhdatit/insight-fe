@@ -5,7 +5,7 @@ WORKDIR /app
 ARG INSIGHT_FE_PORT=6500
 ENV INSIGHT_FE_PORT=${INSIGHT_FE_PORT}
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 RUN npm install --production
 
