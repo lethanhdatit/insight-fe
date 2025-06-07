@@ -1,0 +1,37 @@
+{
+  "title": "Khám Phá Số Mệnh",
+  "subtitle": "Hành trình khám phá bí ẩn tâm linh và giải mã giấc mơ của bạn",
+  "form": {
+    "firstName": "Tên",
+    "middleName": "Tên đệm",
+    "lastName": "Họ",
+    "dateOfBirth": "Ngày sinh",
+    "gender": "Giới tính",
+    "male": "Nam",
+    "female": "Nữ",
+    "religion": "Tôn giáo",
+    "buddhism": "Phật giáo",
+    "christianity": "Thiên chúa giáo",
+    "islam": "Hồi giáo",
+    "hinduism": "Ấn độ giáo",
+    "other": "Khác",
+    "location": "Địa điểm hiện tại",
+    "dreamDescription": "Mô tả giấc mơ",
+    "dreamPlaceholder": "Hãy kể cho chúng tôi về những giấc mơ bí ẩn của bạn...",
+    "submitButton": "Khởi mệnh",
+    "loading": "Đang khám phá số mệnh của bạn..."
+  },
+  "results": {
+    "yourNumbers": "Những con số may mắn của bạn",
+    "detail": "Chi tiết",
+    "warning": "Cảnh báo",
+    "advice": "Lời khuyên",
+    "summary": "Tóm tắt"
+  },
+  "clock": {
+    "morning": "Buổi sáng",
+    "afternoon": "Buổi chiều",
+    "evening": "Buổi tối",
+    "night": "Đêm khuya"
+  }
+}
