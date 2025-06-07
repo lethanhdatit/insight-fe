@@ -7,7 +7,7 @@ ENV INSIGHT_FE_PORT=${INSIGHT_FE_PORT}
 
 COPY package.json ./
 
-RUN npm install --production
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
