@@ -19,4 +19,6 @@ RUN mv .next/standalone /app/standalone
 
 RUN ls -la
 
+RUN cd ./standalone && ls -la
+
 CMD ["node", "/app/standalone/server.js", "--port", "${INSIGHT_FE_PORT}"]
