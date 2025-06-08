@@ -35,16 +35,24 @@ jobs:
         id: vars
         run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
 
-      - name: Save Docker image as tar file
+      - name: Create Docker volume for tar file storage
         run: |
-          sudo docker save insight-fe:latest -o $GITHUB_WORKSPACE/insight-fe.tar
-          
-          chmod 777 $GITHUB_WORKSPACE/insight-fe.tar
-          
-          ls -l $GITHUB_WORKSPACE/insight-fe.tar
+          # Tạo volume Docker để lưu tệp tar
+          docker volume create insight-fe-volume
+
+      - name: Save Docker image as tar file into Docker volume
+        run: |
+          # Lưu Docker image vào Docker volume thay vì hệ thống tệp
+          docker run --rm -v insight-fe-volume:/volume alpine sh -c "docker save insight-fe:latest -o /volume/insight-fe.tar"
+
+      - name: Copy Docker image tar file from volume
+        run: |
+          # Sao chép tệp tar từ Docker volume ra thư mục của GitHub Actions
+          docker run --rm -v insight-fe-volume:/volume -v $GITHUB_WORKSPACE:/workspace alpine cp /volume/insight-fe.tar /workspace/
 
       - name: Verify tar file content
         run: |
+          # Kiểm tra tệp .tar có tồn tại và không rỗng
           if [ ! -f $GITHUB_WORKSPACE/insight-fe.tar ] || [ ! -s $GITHUB_WORKSPACE/insight-fe.tar ]; then
             echo "Tar file does not exist or is empty!"
             exit 1
@@ -57,7 +65,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "$GITHUB_WORKSPACE/insight-fe.tar"
+          source: "$GITHUB_WORKSPACE/insight-fe.tar"  # Đảm bảo đường dẫn đúng
           target: ${{ env.DEPLOY_DIR }}
 
       - name: Deploy on Azure VM via SSH
