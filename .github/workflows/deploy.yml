@@ -30,18 +30,14 @@ jobs:
       - name: Build Docker image
         run: |
           docker-compose -f docker-compose.yml build
-
-      - name: Generate deploy directory name
-        id: vars
-        run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
-
+      
       - name: Save Docker image as tar file
         run: |
           sudo docker save insight-fe:latest -o $GITHUB_WORKSPACE/insight-fe.tar
           
           # Change ownership to runner and then modify permissions
           sudo chown runner:runner $GITHUB_WORKSPACE/insight-fe.tar
-          chmod 777 $GITHUB_WORKSPACE/insight-fe.tar
+          sudo chmod 777 $GITHUB_WORKSPACE/insight-fe.tar
           
           # Verify permissions
           ls -l $GITHUB_WORKSPACE/insight-fe.tar
@@ -54,6 +50,14 @@ jobs:
           fi
           echo "Tar file is valid."
 
+      - name: Generate deploy directory name
+        id: vars
+        run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
+      
+      - name: List files in workspace
+        run: |
+          ls -l $GITHUB_WORKSPACE
+
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.6
         with:
@@ -62,6 +66,7 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           source: "$GITHUB_WORKSPACE/insight-fe.tar"
           target: ${{ env.DEPLOY_DIR }}
+          debug: true
 
       - name: Deploy on Azure VM via SSH
         uses: appleboy/ssh-action@v0.1.6
