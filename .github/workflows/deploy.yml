@@ -107,7 +107,7 @@ jobs:
 
             # 🛠 Run container on the new port
             export INSIGHT_FE_PORT=$NEW_PORT
-            INSIGHT_FE_PORT=$NEW_PORT docker-compose up -d
+            docker run -d -p $NEW_PORT:6500 --name insight-fe -e INSIGHT_FE_PORT=$NEW_PORT insight-fe:latest
 
             # 🩺 Health check
             timeout=30
@@ -119,11 +119,42 @@ jobs:
 
             if ! curl -s http://localhost:$NEW_PORT > /dev/null; then
               echo "Deployment failed: app not responding on port $NEW_PORT"
-              docker-compose logs
-              docker-compose down
+              docker logs insight-fe
+              docker stop insight-fe
+              docker rm insight-fe
               exit 1
             fi
 
             echo "✅ App is healthy on port $NEW_PORT"
 
-            # 🔁 Update NGINX ups
+            # 🔁 Update NGINX upstream config
+            echo "proxy_pass http://127.0.0.1:$NEW_PORT;" | sudo tee /etc/nginx/upstreams/insight-fe-upstream.conf
+            sudo nginx -s reload
+            echo "🔁 NGINX reloaded and now using port $NEW_PORT"
+
+            # ⏳ Wait 2s to ensure new version served
+            sleep 2
+
+            # 🔥 Clean up old containers
+            new_container=$(sudo docker ps --filter "ancestor=insight-fe" --filter "status=running" --format "{{.ID}}")
+
+            echo "New container ID: $new_container"
+
+            echo "Stopping the following containers:"
+            sudo docker ps --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker stop
+
+            echo "Removing the following containers:"
+            sudo docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker rm
+
+            # 🧹 Clean up old deploy folders
+            sudo ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
+            current_dir_name=$(basename "${{ env.DEPLOY_DIR }}")
+            for dir in ~/deploy-insight-fe-*; do
+              dir_name=$(basename "$dir")
+              if [ "$dir_name" != "$current_dir_name" ]; then
+                echo "Removing old deploy folder: $dir"
+                sudo rm -rf "$dir"
+              fi
+            done
+
+            sudo docker container prune -f
