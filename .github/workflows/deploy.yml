@@ -37,9 +37,19 @@ jobs:
 
       - name: Save Docker image as tar file
         run: |
-          sudo docker save insight-fe:latest -o /tmp/insight-fe.tar
-          sudo chmod 777 /tmp/insight-fe.tar  # Thay đổi quyền tệp để đảm bảo tệp có thể được sao chép
-          ls -l /tmp/insight-fe.tar  # Kiểm tra quyền của tệp tar
+          sudo docker save insight-fe:latest -o $GITHUB_WORKSPACE/insight-fe.tar
+          
+          chmod 777 $GITHUB_WORKSPACE/insight-fe.tar
+          
+          ls -l $GITHUB_WORKSPACE/insight-fe.tar
+
+      - name: Verify tar file content
+        run: |
+          if [ ! -f $GITHUB_WORKSPACE/insight-fe.tar ] || [ ! -s $GITHUB_WORKSPACE/insight-fe.tar ]; then
+            echo "Tar file does not exist or is empty!"
+            exit 1
+          fi
+          echo "Tar file is valid."
 
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.6
@@ -47,7 +57,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "/tmp/insight-fe.tar"
+          source: "$GITHUB_WORKSPACE/insight-fe.tar"
           target: ${{ env.DEPLOY_DIR }}
 
       - name: Deploy on Azure VM via SSH
@@ -85,7 +95,7 @@ jobs:
 
             # 🛠 Load Docker image from tar file and run it
             echo "Loading Docker image..."
-            sudo docker load -i /tmp/insight-fe.tar
+            sudo docker load -i $GITHUB_WORKSPACE/insight-fe.tar
 
             # 🛠 Run container on the new port
             export INSIGHT_FE_PORT=$NEW_PORT
