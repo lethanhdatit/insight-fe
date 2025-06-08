@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      
+
       - name: Set up Docker
         run: |
           sudo apt-get update
@@ -37,7 +37,9 @@ jobs:
 
       - name: Save Docker image as tar file
         run: |
-          sudo docker save insight-fe:latest -o insight-fe.tar
+          # Lưu Docker image vào thư mục /tmp để tránh lỗi quyền
+          sudo docker save insight-fe:latest -o /tmp/insight-fe.tar
+          ls -l /tmp/insight-fe.tar  # Kiểm tra quyền của tệp tar
 
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.6
@@ -45,7 +47,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "./insight-fe.tar"
+          source: "/tmp/insight-fe.tar"  # Sao chép từ /tmp/insight-fe.tar
           target: ${{ env.DEPLOY_DIR }}
 
       - name: Deploy on Azure VM via SSH
@@ -83,7 +85,7 @@ jobs:
 
             # 🛠 Load Docker image from tar file and run it
             echo "Loading Docker image..."
-            sudo docker load -i insight-fe.tar
+            sudo docker load -i /tmp/insight-fe.tar
 
             # 🛠 Run container on the new port
             export INSIGHT_FE_PORT=$NEW_PORT
