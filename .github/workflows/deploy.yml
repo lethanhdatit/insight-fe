@@ -37,8 +37,8 @@ jobs:
 
       - name: Save Docker image as tar file
         run: |
-          # Lưu Docker image vào thư mục /tmp để tránh lỗi quyền
           sudo docker save insight-fe:latest -o /tmp/insight-fe.tar
+          sudo chmod 777 /tmp/insight-fe.tar  # Thay đổi quyền tệp để đảm bảo tệp có thể được sao chép
           ls -l /tmp/insight-fe.tar  # Kiểm tra quyền của tệp tar
 
       - name: Copy files to Azure VM
@@ -47,7 +47,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "/tmp/insight-fe.tar"  # Sao chép từ /tmp/insight-fe.tar
+          source: "/tmp/insight-fe.tar"
           target: ${{ env.DEPLOY_DIR }}
 
       - name: Deploy on Azure VM via SSH
