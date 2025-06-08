@@ -17,6 +17,6 @@ RUN cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
 RUN mv .next/standalone /app/standalone
 
-RUN bash -c 'shopt -s extglob && rm -rf /app/!(standalone)'
+RUN ls -la
 
 CMD ["node", "/app/standalone/server.js", "--port", "${INSIGHT_FE_PORT}"]
