@@ -91,23 +91,23 @@ jobs:
             echo "Using new port: $NEW_PORT"
 
             echo "Checking for containers using port $NEW_PORT..."
-            containers_using_port=$(sudo docker ps -a --filter "publish=$NEW_PORT" --format "{{.ID}}")
+            containers_using_port=$(docker ps -a --filter "publish=$NEW_PORT" --format "{{.ID}}")
 
             if [ -n "$containers_using_port" ]; then
                 echo "Stopping and removing containers using port $NEW_PORT..."
-                echo "$containers_using_port" | xargs -r sudo docker stop
-                echo "$containers_using_port" | xargs -r sudo docker rm
+                echo "$containers_using_port" | xargs -r docker stop
+                echo "$containers_using_port" | xargs -r docker rm
             else
                 echo "No containers are using port $NEW_PORT."
             fi
 
             # 🛠 Load Docker image from tar file and run it
             echo "Loading Docker image..."
-            sudo docker load -i insight-fe.tar
+            docker load -i insight-fe.tar
 
             # 🛠 Run container on the new port
             export INSIGHT_FE_PORT=$NEW_PORT
-            sudo INSIGHT_FE_PORT=$NEW_PORT docker-compose up -d
+            INSIGHT_FE_PORT=$NEW_PORT docker-compose up -d
 
             # 🩺 Health check
             timeout=30
@@ -119,8 +119,8 @@ jobs:
 
             if ! curl -s http://localhost:$NEW_PORT > /dev/null; then
               echo "Deployment failed: app not responding on port $NEW_PORT"
-              sudo docker-compose logs
-              sudo docker-compose down
+              docker-compose logs
+              docker-compose down
               exit 1
             fi
 
