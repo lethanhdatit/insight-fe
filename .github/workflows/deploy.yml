@@ -102,7 +102,7 @@ jobs:
             fi
 
             # 🛠 Load Docker image from tar file and run it
-            echo "Loading Docker image..."
+            echo "Loading Docker image...."
             docker load -i insight-fe.tar
 
             # 🛠 Run container on the new port
