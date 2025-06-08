@@ -5,6 +5,10 @@ WORKDIR /app
 ARG INSIGHT_FE_PORT=6500
 ENV INSIGHT_FE_PORT=${INSIGHT_FE_PORT}
 
+RUN mkdir temp
+
+WORKDIR /app/temp
+
 COPY package.json ./
 
 RUN npm install --legacy-peer-deps
@@ -15,9 +19,11 @@ RUN npm run build
 
 RUN cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
-RUN mv .next/standalone /standalone
+RUN mv .next/standalone /app/standalone
 
-RUN rm -rf .next app components lib node_modules public styles hooks package-lock.json package.json
+WORKDIR /app
+
+RUN rm -rf temp
 
 RUN ls -la
 
