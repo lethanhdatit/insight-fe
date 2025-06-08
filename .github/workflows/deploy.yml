@@ -33,18 +33,18 @@ jobs:
       
       - name: Save Docker image as tar file
         run: |
-          sudo docker save insight-fe:latest -o $GITHUB_WORKSPACE/insight-fe.tar
+          sudo docker save insight-fe:latest -o insight-fe.tar
           
           # Change ownership to runner and then modify permissions
-          sudo chown runner:runner $GITHUB_WORKSPACE/insight-fe.tar
-          sudo chmod 777 $GITHUB_WORKSPACE/insight-fe.tar
+          sudo chown runner:runner insight-fe.tar
+          sudo chmod 777 insight-fe.tar
           
           # Verify permissions
-          ls -l $GITHUB_WORKSPACE/insight-fe.tar
+          ls -l insight-fe.tar
 
       - name: Verify tar file content
         run: |
-          if [ ! -f $GITHUB_WORKSPACE/insight-fe.tar ] || [ ! -s $GITHUB_WORKSPACE/insight-fe.tar ]; then
+          if [ ! -f insight-fe.tar ] || [ ! -s insight-fe.tar ]; then
             echo "Tar file does not exist or is empty!"
             exit 1
           fi
@@ -56,7 +56,7 @@ jobs:
       
       - name: List files in workspace
         run: |
-          ls -l $GITHUB_WORKSPACE
+          ls -la
 
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.6
@@ -64,7 +64,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "$GITHUB_WORKSPACE/insight-fe.tar"
+          source: "insight-fe.tar"
           target: ${{ env.DEPLOY_DIR }}
           debug: true
 
@@ -103,7 +103,7 @@ jobs:
 
             # 🛠 Load Docker image from tar file and run it
             echo "Loading Docker image..."
-            sudo docker load -i $GITHUB_WORKSPACE/insight-fe.tar
+            sudo docker load -i insight-fe.tar
 
             # 🛠 Run container on the new port
             export INSIGHT_FE_PORT=$NEW_PORT
