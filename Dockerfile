@@ -15,10 +15,12 @@ RUN npm run build
 
 RUN cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
-RUN mv .next/standalone /app/standalone
+RUN mv .next/standalone /standalone
+
+RUN rm -rf .next app components lib node_modules public styles hooks package-lock.json package.json
 
 RUN ls -la
 
 RUN cd ./standalone && ls -la
 
-CMD ["node", "/app/standalone/server.js", "--port", "${INSIGHT_FE_PORT}"]
+CMD ["node", "/standalone/server.js", "--port", "${INSIGHT_FE_PORT}"]
