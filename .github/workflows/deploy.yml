@@ -35,24 +35,19 @@ jobs:
         id: vars
         run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
 
-      - name: Create Docker volume for tar file storage
+      - name: Save Docker image as tar file
         run: |
-          # Tạo volume Docker để lưu tệp tar
-          docker volume create insight-fe-volume
-
-      - name: Save Docker image as tar file into Docker volume
-        run: |
-          # Lưu Docker image vào Docker volume thay vì hệ thống tệp
-          docker run --rm -v insight-fe-volume:/volume alpine sh -c "docker save insight-fe:latest -o /volume/insight-fe.tar"
-
-      - name: Copy Docker image tar file from volume
-        run: |
-          # Sao chép tệp tar từ Docker volume ra thư mục của GitHub Actions
-          docker run --rm -v insight-fe-volume:/volume -v $GITHUB_WORKSPACE:/workspace alpine cp /volume/insight-fe.tar /workspace/
+          sudo docker save insight-fe:latest -o $GITHUB_WORKSPACE/insight-fe.tar
+          
+          # Change ownership to runner and then modify permissions
+          sudo chown runner:runner $GITHUB_WORKSPACE/insight-fe.tar
+          chmod 777 $GITHUB_WORKSPACE/insight-fe.tar
+          
+          # Verify permissions
+          ls -l $GITHUB_WORKSPACE/insight-fe.tar
 
       - name: Verify tar file content
         run: |
-          # Kiểm tra tệp .tar có tồn tại và không rỗng
           if [ ! -f $GITHUB_WORKSPACE/insight-fe.tar ] || [ ! -s $GITHUB_WORKSPACE/insight-fe.tar ]; then
             echo "Tar file does not exist or is empty!"
             exit 1
@@ -65,7 +60,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "$GITHUB_WORKSPACE/insight-fe.tar"  # Đảm bảo đường dẫn đúng
+          source: "$GITHUB_WORKSPACE/insight-fe.tar"
           target: ${{ env.DEPLOY_DIR }}
 
       - name: Deploy on Azure VM via SSH
@@ -126,34 +121,4 @@ jobs:
 
             echo "✅ App is healthy on port $NEW_PORT"
 
-            # 🔁 Update NGINX upstream config
-            echo "proxy_pass http://127.0.0.1:$NEW_PORT;" | sudo tee /etc/nginx/upstreams/insight-fe-upstream.conf
-            sudo nginx -s reload
-            echo "🔁 NGINX reloaded and now using port $NEW_PORT"
-
-            # ⏳ Wait 2s to ensure new version served
-            sleep 2
-
-            # 🔥 Clean up old containers
-            new_container=$(sudo docker ps --filter "ancestor=insight-fe" --filter "status=running" --format "{{.ID}}")
-
-            echo "New container ID: $new_container"
-
-            echo "Stopping the following containers:"
-            sudo docker ps --filter "name=deploy-insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker stop
-
-            echo "Removing the following containers:"
-            sudo docker ps -a --filter "name=deploy-insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker rm
-
-            # 🧹 Clean up old deploy folders
-            sudo ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
-            current_dir_name=$(basename "${{ env.DEPLOY_DIR }}")
-            for dir in ~/deploy-insight-fe-*; do
-              dir_name=$(basename "$dir")
-              if [ "$dir_name" != "$current_dir_name" ]; then
-                echo "Removing old deploy folder: $dir"
-                sudo rm -rf "$dir"
-              fi
-            done
-
-            sudo docker container prune -f
+            # 🔁 Update NGINX ups
