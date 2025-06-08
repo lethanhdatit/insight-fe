@@ -37,7 +37,7 @@ jobs:
 
       - name: Save Docker image as tar file
         run: |
-          docker save insight-fe -o insight-fe.tar
+          docker save insight-fe:latest -o insight-fe.tar
 
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.6

@@ -17,7 +17,7 @@ COPY . .
 
 RUN npm run build
 
-RUN cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
+RUN mkdir -p .next/standalone && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
 RUN mv .next/standalone /app/standalone
 

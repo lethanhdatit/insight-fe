@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: insight-fe
+    image: insight-fe:latest
     ports:
       - "${INSIGHT_FE_PORT:-6500}:6500"
     environment:
