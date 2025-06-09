@@ -143,29 +143,29 @@ jobs:
             sleep 2
 
             # Clean up old containers
-            new_container=$(sudo docker ps --filter "name=insight-fe-temp" --filter "status=running" --format "{{.ID}}")
+            new_container=$(docker ps --filter "name=insight-fe-temp" --filter "status=running" --format "{{.ID}}")
 
             echo "New container ID: $new_container"
 
             echo "Stopping the following containers:"
-            sudo docker ps --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker stop
+            docker ps --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r docker stop
 
             echo "Removing the following containers:"
-            sudo docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker rm
+            docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r docker rm
 
             echo "Renaming 'insight-fe-temp' to 'insight-fe'"
-            sudo docker rename insight-fe-temp insight-fe
-            sudo docker ps -a
+            docker rename insight-fe-temp insight-fe
+            docker ps -a
 
             # Clean up old deploy folders
-            sudo ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
+            ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
             current_dir_name=$(basename "${{ env.DEPLOY_DIR }}")
             for dir in ~/deploy-insight-fe-*; do
               dir_name=$(basename "$dir")
               if [ "$dir_name" != "$current_dir_name" ]; then
                 echo "Removing old deploy folder: $dir"
-                sudo rm -rf "$dir"
+                rm -rf "$dir"
               fi
             done
 
-            sudo docker container prune -f
+            docker container prune -f
