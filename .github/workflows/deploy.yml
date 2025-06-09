@@ -159,7 +159,7 @@ jobs:
             docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r docker rm
             
             docker container prune -f
-            docker image prune -a
+            docker system prune -a --volumes -f
 
             sleep 2
 
@@ -181,4 +181,4 @@ jobs:
             done
 
             docker container prune -f
-            docker image prune -a
+            docker system prune -a --volumes -f
