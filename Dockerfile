@@ -31,4 +31,4 @@ RUN ls -la
 
 RUN npm install pm2 -g
 
-CMD ["pm2", "start", "server.js", "--name", "insight-fe", "--port", "${INSIGHT_FE_PORT}", "--watch", "--no-daemon"]
+CMD ["pm2", "start", "server.js", "--name", "insight-fe", "--watch", "--no-daemon"]
