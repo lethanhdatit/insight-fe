@@ -107,7 +107,7 @@ jobs:
 
             # Run container on the new port
             export INSIGHT_FE_PORT=$NEW_PORT
-            docker run -d -p $NEW_PORT:6500 --name insight-fe -e INSIGHT_FE_PORT=$NEW_PORT insight-fe:latest
+            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT insight-fe:latest
 
             # Health check
             timeout=30
@@ -119,9 +119,9 @@ jobs:
 
             if ! curl -s http://localhost:$NEW_PORT > /dev/null; then
               echo "Deployment failed: app not responding on port $NEW_PORT"
-              docker logs insight-fe
-              docker stop insight-fe
-              docker rm insight-fe
+              docker logs insight-fe-temp
+              docker stop insight-fe-temp
+              docker rm insight-fe-temp
               exit 1
             fi
 
@@ -136,7 +136,7 @@ jobs:
             sleep 2
 
             # Clean up old containers
-            new_container=$(sudo docker ps --filter "ancestor=insight-fe" --filter "status=running" --format "{{.ID}}")
+            new_container=$(sudo docker ps --filter "name=insight-fe-temp" --filter "status=running" --format "{{.ID}}")
 
             echo "New container ID: $new_container"
 
@@ -146,6 +146,10 @@ jobs:
             echo "Removing the following containers:"
             sudo docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r sudo docker rm
 
+            echo "Renaming 'insight-fe-temp' to 'insight-fe'"
+            sudo docker rename insight-fe-temp insight-fe
+            sudo docker ps -a
+            
             # Clean up old deploy folders
             sudo ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
             current_dir_name=$(basename "${{ env.DEPLOY_DIR }}")
