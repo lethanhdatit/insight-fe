@@ -19,7 +19,7 @@ RUN npm run build
 
 RUN mkdir -p .next/standalone && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
 
-RUN mv .next/standalone/* /app
+RUN cp -r .next/standalone/. /app
 
 WORKDIR /app
 
