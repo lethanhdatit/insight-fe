@@ -49,10 +49,10 @@ export default function AncientClock({ dictionary }: MysticalFormProps) {
 
   const getTimeOfDay = () => {
     const hour = time.getHours();
-    if (hour >= 6 && hour < 12) return `${dictionary.common.morning} (晨)`;
-    if (hour >= 12 && hour < 18) return `${dictionary.common.afternoon} (午)`;
-    if (hour >= 18 && hour < 22) return `${dictionary.common.evening} (暮)`;
-    return `${dictionary.common.night} (夜)`;
+    if (hour >= 6 && hour < 12) return `${dictionary.clock.morning} (晨)`;
+    if (hour >= 12 && hour < 18) return `${dictionary.clock.afternoon} (午)`;
+    if (hour >= 18 && hour < 22) return `${dictionary.clock.evening} (暮)`;
+    return `${dictionary.clock.night} (夜)`;
   };
 
   const formatTime = (date: Date) => {

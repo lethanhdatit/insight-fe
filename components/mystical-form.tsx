@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import AncientLoading from "./ancient-loading";
 import AncientResultDisplay from "./ancient-result-display";
+import { apiCall } from "@/helpers/apiHelper";
 
 interface FormData {
   firstName: string;
@@ -55,15 +56,8 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/theology", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await apiCall("/api/theology", "POST", formData, true);
 
-      const data = await response.json();
       setResult(data);
 
       setTimeout(() => {
@@ -116,7 +110,7 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full min-w-6xl max-w-8xl min-h-8xl mx-auto">
       {/* Ancient Book Design */}
       <div className="ancient-book rounded-lg p-8 book-spine scroll-unfurl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

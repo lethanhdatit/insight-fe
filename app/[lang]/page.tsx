@@ -1,14 +1,17 @@
 import MysticalForm from "@/components/mystical-form"
 import AncientClock from "@/components/ancient-clock"
 import { getDictionary } from './dictionaries';
-import { Locale } from '@/lib/i18n/locales';
+import { Locale, locales  } from '@/lib/i18n/locales';
 
 export default async function HomePage({
   params,
 }: {
   params: { lang: Locale }
 }) {
-  const dictionary = await getDictionary(params.lang);
+
+  const { lang } = await params
+
+  const dictionary = await getDictionary(lang);
 
   const spreadFactor = 0.85;
 

@@ -29,8 +29,8 @@
     "numberTitle": "Những con số định mệnh của bạn",
     "numberSubTitle": "Giải Mã Vận Mệnh",
     "reSubmitButton": "Khám phá lại",
-    "onLoading": "Đang tải kết quả...",
-    "onError": "Có lỗi xảy ra khi tham vấn thiên cơ. Vui lòng thử lại."
+    "loading": "Đang tải kết quả...",
+    "error": "Có lỗi xảy ra khi tham vấn thiên cơ. Vui lòng thử lại."
   },
   "clock": {
     "morning": "Sáng",
@@ -62,10 +62,5 @@
     { "value": 9, "label": "Vô thần" },
     { "value": 10, "label": "Tôn giáo khác" }
   ],
-  "common": {
-    "morning": "Sáng",
-    "afternoon": "Trưa",
-    "evening": "Chiều",
-    "night": "Tối"
-  }
+  "common": {}
 }

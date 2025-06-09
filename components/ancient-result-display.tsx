@@ -25,22 +25,22 @@ export default function AncientResultDisplay({
     {
       key: "detail",
       title: dictionary.results.detail,
-      data: result.data.explanation.detail || [],
+      data: result.explanation.detail || [],
     },
     {
       key: "warning",
       title: dictionary.results.warning,
-      data: result.data.explanation.warning || [],
+      data: result.explanation.warning || [],
     },
     {
       key: "advice",
       title: dictionary.results.advice,
-      data: result.data.explanation.advice || [],
+      data: result.explanation.advice || [],
     },
     {
       key: "summary",
       title: dictionary.results.summary,
-      data: result.data.explanation.summary || [],
+      data: result.explanation.summary || [],
     },
   ];
 
@@ -92,7 +92,7 @@ export default function AncientResultDisplay({
         if (index < fullText.length) {
           setDisplayedText(fullText.slice(0, index + 1));
           index++;
-          setTimeout(typeWriter, 80);
+          setTimeout(typeWriter, 30);
         } else {
           setTimeout(() => {
             setCurrentSection((prev) => prev + 1);
@@ -119,16 +119,15 @@ export default function AncientResultDisplay({
 
   if (
     !result ||
-    !result.data ||
-    !result.data.numbers ||
-    !result.data.explanation
+    !result.numbers ||
+    !result.explanation
   ) {
     return (
       <div className="max-w-6xl mx-auto">
         <div className="ancient-book rounded-lg p-8">
           <div className="parchment rounded-lg p-8 text-center">
             <div className="text-red-600 ancient-font text-lg">              
-              {dictionary.results.onError}
+              {dictionary.results.error}
             </div>
           </div>
         </div>
@@ -142,7 +141,7 @@ export default function AncientResultDisplay({
         <div className="ancient-book rounded-lg p-8">
           <div className="parchment rounded-lg p-8 text-center">
             <div className="text-amber-800 ancient-font text-lg">              
-              {dictionary.results.onLoading}
+              {dictionary.results.loading}
             </div>
           </div>
         </div>
@@ -164,7 +163,7 @@ export default function AncientResultDisplay({
             </div>
 
             <div className="flex justify-center items-center flex-wrap gap-6 min-h-64">
-              {result.data.numbers.map((number: number, index: number) => (
+              {result.numbers.map((number: number, index: number) => (
                 <div
                   key={index}
                   className="ancient-number w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold floating-ancient"
