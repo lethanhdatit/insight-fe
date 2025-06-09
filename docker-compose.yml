@@ -10,7 +10,8 @@ services:
     ports:
       - "${INSIGHT_FE_PORT:-6500}:6500"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=
+      - PORT=${INSIGHT_FE_PORT:-6500}
       - INSIGHT_FE_PORT=${INSIGHT_FE_PORT:-6500}
     networks:
       - insight-fe-net

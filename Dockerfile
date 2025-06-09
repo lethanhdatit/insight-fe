@@ -27,4 +27,7 @@ RUN rm -rf temp
 
 RUN ls -la
 
+# Set environment variable for Next.js to use the correct port
+ENV PORT=${INSIGHT_FE_PORT:-6500}
+
 CMD ["node", "server.js", "--port", "${INSIGHT_FE_PORT}"]
