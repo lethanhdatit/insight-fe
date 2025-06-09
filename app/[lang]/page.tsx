@@ -1,90 +1,18 @@
 import MysticalForm from "@/components/mystical-form"
 import AncientClock from "@/components/ancient-clock"
+import { getDictionary } from './dictionaries';
+import { Locale } from '@/lib/i18n/locales';
 
-// Static dictionary for Vietnamese with ancient theme
-const dictionary = {
-  title: "Khám Phá Số Mệnh",
-  subtitle: "Hành trình khám phá bí ẩn tâm linh qua trí tuệ cổ xưa",
-  form: {
-    title: "Thông Tin Cá Nhân",
-    firstName: "Tên",
-    middleName: "Tên đệm",
-    lastName: "Họ",
-    dateOfBirth: "Ngày sinh",
-    gender: "Giới tính",
-    genderPlaceholder: "Chọn giới tính",
-    religion: "Tôn giáo",
-    religionPlaceholder: "Chọn tôn giáo",
-    location: "Địa điểm hiện tại",
-    locationExample: "Ví dụ: Quận 1, TP.HCM",
-    dreamDescription: "Mô tả giấc mơ",
-    dreamPlaceholder: "Hãy thuật lại những giấc mơ huyền bí của bạn...",
-    submitButton: "Khởi Mệnh",    
-    loading: "Đang tham vấn thiên cơ...",
-    loadingSub: "Thiên cơ đang được tham vấn...",    
-  },
-  results: {
-    yourNumbers: "Những Con Số Định Mệnh",
-    detail: "Chi Tiết Giải Mã",
-    warning: "Cảnh Báo Thiên Cơ",
-    advice: "Lời Khuyên Tâm Linh",
-    summary: "Tổng Kết Vận Mệnh",
-    skipDraw: "Bỏ qua hiệu ứng",
-    numberTitle: "Những con số định mệnh của bạn",
-    numberSubTitle: "Giải Mã Vận Mệnh",
-    reSubmitButton: "Khám phá lại",
-    onLoading: "Đang tải kết quả...",
-    onError: "Có lỗi xảy ra khi tham vấn thiên cơ. Vui lòng thử lại."
-  },
-  clock: {
-    morning: "Sáng",
-    afternoon: "Trưa",
-    evening: "Chiều",
-    night: "Đêm",
-  },
-  genders: [
-    { value: 1, label: "Nam" },
-    { value: 2, label: "Nữ" },
-    { value: 3, label: "Phi nhị nguyên" },
-    { value: 4, label: "Nam chuyển giới" },
-    { value: 5, label: "Nữ chuyển giới" },
-    { value: 6, label: "Biến đổi giới tính" },
-    { value: 7, label: "Vô giới" },
-    { value: 8, label: "Hai linh hồn" },
-    { value: 9, label: "Intersex" },
-    { value: 10, label: "Khác" },
-  ],
-  religions: [
-    { value: 1, label: "Phật giáo" },
-    { value: 2, label: "Công giáo" },
-    { value: 3, label: "Tin Lành" },
-    { value: 4, label: "Hồi giáo" },
-    { value: 5, label: "Do Thái giáo" },
-    { value: 6, label: "Ấn Độ giáo" },
-    { value: 7, label: "Khổng giáo" },
-    { value: 8, label: "Tao giáo" },
-    { value: 9, label: "Vô thần" },
-    { value: 10, label: "Tôn giáo khác" },
-  ],
-  common: {
-    morning: "Sáng",
-    afternoon: "Trưa",
-    evening: "Chiều",
-    night: "Tối",
-  }
-}
-
-export default function HomePage({
+export default async function HomePage({
   params,
 }: {
-  params: { lang: string }
+  params: { lang: Locale }
 }) {
-  // Spread factor to control how close icons are to the edges
-  const spreadFactor = 0.85; // Larger value means icons are closer to the edges
+  const dictionary = await getDictionary(params.lang);
 
-  // Function to generate random positions within the screen near the edges
+  const spreadFactor = 0.85;
+
   const generateRandomPosition = () => {
-    // Top and Left values are randomized within the range of 10% to 90% of the screen size
     const top = Math.random() * (90 - spreadFactor * 20) + spreadFactor * 10; // Random top position near edges
     const left = Math.random() * (90 - spreadFactor * 20) + spreadFactor * 10; // Random left position near edges
     return { top: `${top}%`, left: `${left}%` };

@@ -1,7 +1,15 @@
-import "server-only"
+// app/[lang]/dictionaries.ts
+import 'server-only';
+import { Locale } from '@/lib/i18n/locales';
 
-const dictionaries = {
-  vi: () => import("./dictionaries/vi.json").then((module) => module.default),
-}
+type Dictionary = typeof import('./dictionaries/vi.json');
 
-export const getDictionary = async (locale: "vi") => dictionaries[locale]()
+const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
+  vi: () => import('./dictionaries/vi.json').then((m) => m.default),
+};
+
+export const getDictionary = async (locale: Locale) => {
+  const loader = dictionaries[locale];
+  if (!loader) throw new Error(`No dictionary found for locale: ${locale}`);
+  return loader();
+};
