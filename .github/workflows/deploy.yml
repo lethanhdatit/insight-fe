@@ -43,7 +43,7 @@ jobs:
           echo "Tar file is valid."
 
       - name: Upload Docker image as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: insight-fe-image
           path: insight-fe.tar
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Docker image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: insight-fe-image
 
