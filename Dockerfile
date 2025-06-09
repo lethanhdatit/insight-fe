@@ -3,7 +3,9 @@ FROM node:22-alpine
 WORKDIR /app
 
 ARG INSIGHT_FE_PORT=6500
-ENV INSIGHT_FE_PORT=${INSIGHT_FE_PORT}
+ENV INSIGHT_FE_PORT=${INSIGHT_FE_PORT:-6500}
+ENV PORT=${INSIGHT_FE_PORT}
+EXPOSE ${INSIGHT_FE_PORT}
 
 RUN mkdir temp
 
@@ -26,8 +28,5 @@ WORKDIR /app
 RUN rm -rf temp
 
 RUN ls -la
-
-# Set environment variable for Next.js to use the correct port
-ENV PORT=${INSIGHT_FE_PORT:-6500}
 
 CMD ["node", "server.js", "--port", "${INSIGHT_FE_PORT}"]
