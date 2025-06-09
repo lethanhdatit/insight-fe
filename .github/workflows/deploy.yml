@@ -138,7 +138,7 @@ jobs:
             echo "✅ App is healthy on port $NEW_PORT"
 
             # Update NGINX upstream config
-            echo "proxy_pass http://127.0.0.1:$NEW_PORT;" | sudo tee /etc/nginx/upstreams/insight-fe-upstream.conf
+            echo "proxy_pass http://127.0.0.1:$NEW_PORT;" | tee /etc/nginx/upstreams/insight-fe-upstream.conf
 
             echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S nginx -s reload
             echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S nginx -t
@@ -155,23 +155,31 @@ jobs:
             echo "Stopping the following containers:"
             docker ps --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r docker stop
 
+            docker ps -a
+
             echo "Removing the following containers:"
             docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r docker rm
+            
+            docker container prune -f
+
+            docker ps -a
 
             sleep 4
+
+            docker ps -a
 
             echo "Renaming 'insight-fe-temp' to 'insight-fe'"
             docker rename insight-fe-temp insight-fe
             docker ps -a
 
             # Clean up old deploy folders
-            ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
+            echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
             current_dir_name=$(basename "${{ env.DEPLOY_DIR }}")
             for dir in ~/deploy-insight-fe-*; do
               dir_name=$(basename "$dir")
               if [ "$dir_name" != "$current_dir_name" ]; then
                 echo "Removing old deploy folder: $dir"
-                echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S  rm -rf "$dir"
+                echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S rm -rf "$dir"
               fi
             done
 
