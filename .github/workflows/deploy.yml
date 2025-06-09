@@ -6,9 +6,8 @@ on:
       - production
 
 jobs:
-  deploy:
+  build_and_save_image:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -17,29 +16,22 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
           sudo apt-get update
           sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Build Docker image
         run: |
           docker-compose -f docker-compose.yml build
-      
+
       - name: Save Docker image as tar file
         run: |
           sudo docker save insight-fe:latest -o insight-fe.tar
-          
-          # Change ownership to runner and then modify permissions
           sudo chown runner:runner insight-fe.tar
           sudo chmod 777 insight-fe.tar
-          
-          # Verify permissions
           ls -l insight-fe.tar
 
       - name: Verify tar file content
@@ -53,7 +45,11 @@ jobs:
       - name: Generate deploy directory name
         id: vars
         run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
-      
+
+  deploy_to_vm:
+    needs: build_and_save_image  # Chỉ chạy job này khi job build_and_save_image thành công
+    runs-on: ubuntu-latest
+    steps:
       - name: List files in workspace
         run: |
           ls -la
@@ -149,7 +145,7 @@ jobs:
             echo "Renaming 'insight-fe-temp' to 'insight-fe'"
             sudo docker rename insight-fe-temp insight-fe
             sudo docker ps -a
-            
+
             # Clean up old deploy folders
             sudo ln -sfn ${{ env.DEPLOY_DIR }} ~/deploy-insight-fe
             current_dir_name=$(basename "${{ env.DEPLOY_DIR }}")
