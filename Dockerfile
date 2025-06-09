@@ -29,4 +29,6 @@ RUN rm -rf temp
 
 RUN ls -la
 
-CMD ["node", "server.js", "--port", "${INSIGHT_FE_PORT}"]
+RUN npm install pm2 -g
+
+CMD ["pm2", "start", "server.js", "--name", "insight-fe", "--port", "${INSIGHT_FE_PORT}", "--watch", "--no-daemon"]
