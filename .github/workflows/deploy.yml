@@ -42,18 +42,29 @@ jobs:
           fi
           echo "Tar file is valid."
 
-      - name: Generate deploy directory name
-        id: vars
-        run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
+      - name: Upload Docker image as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: insight-fe-image
+          path: insight-fe.tar
 
   deploy_to_vm:
     needs: build_and_save_image  # Chỉ chạy job này khi job build_and_save_image thành công
     runs-on: ubuntu-latest
     steps:
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: insight-fe-image
+
       - name: List files in workspace
         run: |
           ls -la
 
+      - name: Generate deploy directory name
+        id: vars
+        run: echo "DEPLOY_DIR=~/deploy-insight-fe-$(date +%s)" >> $GITHUB_ENV
+        
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.6
         with:
