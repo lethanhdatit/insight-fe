@@ -85,6 +85,9 @@ jobs:
             cd ${{ env.DEPLOY_DIR }}
             export TIMESTAMP=$(date +%s)
 
+            echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S  chown ${{ secrets.AZURE_VM_USER }}:${{ secrets.AZURE_VM_USER }} /etc/nginx/upstreams/insight-fe-upstream.conf
+            echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S  chmod 644 /etc/nginx/upstreams/insight-fe-upstream.conf
+
             # Find current port (6500/6501/6502...) from upstream file
             CURRENT_PORT=$(grep -oP 'http://127.0.0.1:\K[0-9]+' /etc/nginx/upstreams/insight-fe-upstream.conf || echo "6500")
             echo "Current port in use: $CURRENT_PORT"
@@ -141,11 +144,11 @@ jobs:
             echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S nginx -t
             echo "NGINX reloaded and now using port $NEW_PORT"
 
-            # Wait 2s to ensure new version served
-            sleep 2
+            # Wait 4s to ensure new version served
+            sleep 4
 
             # Clean up old containers
-            new_container=$(docker ps --filter "name=insight-fe-temp" --filter "status=running" --format "{{.ID}}")
+            new_container=$(docker ps --filter "name=insight-fe-temp" --format "{{.ID}}")
 
             echo "New container ID: $new_container"
 
@@ -154,6 +157,8 @@ jobs:
 
             echo "Removing the following containers:"
             docker ps -a --filter "name=insight-fe" --format "{{.ID}} {{.Ports}}" | grep ":$CURRENT_PORT->" | awk '{print $1}' | grep -v "$new_container" | xargs -r docker rm
+
+            sleep 4
 
             echo "Renaming 'insight-fe-temp' to 'insight-fe'"
             docker rename insight-fe-temp insight-fe
@@ -166,7 +171,7 @@ jobs:
               dir_name=$(basename "$dir")
               if [ "$dir_name" != "$current_dir_name" ]; then
                 echo "Removing old deploy folder: $dir"
-                rm -rf "$dir"
+                echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S  rm -rf "$dir"
               fi
             done
 
