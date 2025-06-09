@@ -135,8 +135,8 @@ jobs:
             echo "✅ App is healthy on port $NEW_PORT"
 
             # Update NGINX upstream config
-            echo "proxy_pass http://127.0.0.1:$NEW_PORT;" | sudo tee /etc/nginx/upstreams/insight-fe-upstream.conf
-            sudo nginx -s reload
+            echo "proxy_pass http://127.0.0.1:$NEW_PORT;" | echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S tee /etc/nginx/upstreams/insight-fe-upstream.conf
+            echo "${{ secrets.AZURE_VM_PASSWORD }}" | sudo -S nginx -s reload
             echo "NGINX reloaded and now using port $NEW_PORT"
 
             # Wait 2s to ensure new version served
