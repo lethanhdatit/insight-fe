@@ -13,7 +13,7 @@ export function withDecryption<T = any>(
 ) {
   return async function (req: NextRequest): Promise<NextResponse> {
     try {
-      const secret = options?.secret || process.env.NEXT_PUBLIC_AES_SECRET!;
+      const secret = options?.secret || process.env.NEXT_PUBLIC_API_AES_SECRET!;
       const encrypted = await req.text();
 
       const bytes = CryptoJS.AES.decrypt(encrypted, secret);

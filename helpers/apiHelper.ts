@@ -9,7 +9,7 @@ export async function apiCall(
   if (body) body = JSON.stringify(body);
 
   if (shouldEncrypt && body) {
-    body = CryptoJS.AES.encrypt(body, process.env.NEXT_PUBLIC_AES_SECRET!).toString();
+    body = CryptoJS.AES.encrypt(body, process.env.NEXT_PUBLIC_API_AES_SECRET!).toString();
   }
 
   try {

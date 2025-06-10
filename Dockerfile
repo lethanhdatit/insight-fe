@@ -5,6 +5,7 @@ WORKDIR /app
 ARG INSIGHT_FE_PORT=6500
 ENV INSIGHT_FE_PORT=${INSIGHT_FE_PORT:-6500}
 ENV PORT=${INSIGHT_FE_PORT}
+ENV NEXT_PUBLIC_API_AES_SECRET=${NEXT_PUBLIC_API_AES_SECRET}
 EXPOSE ${INSIGHT_FE_PORT}
 
 RUN mkdir temp
@@ -17,6 +18,8 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+RUN ls -la
+
 RUN npm run build
 
 RUN mkdir -p .next/standalone && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
@@ -28,6 +31,8 @@ WORKDIR /app
 RUN rm -rf temp
 
 RUN ls -la
+
+RUN ls -la ./.next
 
 RUN npm install pm2 -g
 
