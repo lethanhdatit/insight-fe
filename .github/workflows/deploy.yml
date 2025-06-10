@@ -116,7 +116,8 @@ jobs:
             docker load -i insight-fe.tar
 
             # Run container on the new port
-            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT NEXT_PUBLIC_API_AES_SECRET=${{ secrets.API_CALL_ENCRYPTION_AES_SECRET }} insight-fe:latest
+            export ACEAS=${{ secrets.API_CALL_ENCRYPTION_AES_SECRET }}
+            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT NEXT_PUBLIC_API_AES_SECRET=$ACEAS insight-fe:latest
 
             # Health check
             timeout=30
