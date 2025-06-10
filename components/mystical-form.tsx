@@ -110,7 +110,7 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
   }
 
   return (
-    <div className="w-full min-w-6xl max-w-8xl min-h-8xl mx-auto">
+    <div className="w-full min-w-6xl max-w-8xl min-h-5xl mx-auto">
       {/* Ancient Book Design */}
       <div className="ancient-book rounded-lg p-8 book-spine scroll-unfurl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
