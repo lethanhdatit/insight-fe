@@ -1,7 +1,7 @@
 import MysticalForm from "@/components/mystical-form";
 import AncientClock from "@/components/ancient-clock";
 import { getDictionary } from "./dictionaries";
-import { Locale, locales } from "@/lib/i18n/locales";
+import { Locale } from "@/lib/i18n/locales";
 import UserMenu from "@/components/UserMenu";
 import HeaderSpacer from "@/components/HeaderSpacer";
 
@@ -11,8 +11,7 @@ export default async function HomePage({
   params: { lang: Locale };
 }) {
   const { lang } = await params;
-  const dictionary = await getDictionary(lang);
-  const user = null;
+  const dictionary = await getDictionary(lang);  
 
   return (
     <>
@@ -20,11 +19,11 @@ export default async function HomePage({
       <header
         id="main-header"
         className="fixed top-0 left-0 w-full z-30 bg-[var(--parchment)]/90 backdrop-blur flex items-center px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-3 shadow ancient-glow h-auto"
-        style={{ minHeight: "unset", maxHeight: "none"}}
+        style={{ minHeight: "unset", maxHeight: "none" }}
       >
         {/* Bên trái */}
         <div className="flex items-center">
-          <UserMenu user={user} />
+          <UserMenu dictionary={dictionary} />
         </div>
         {/* Khoảng trống ở giữa */}
         <div className="flex-1" />

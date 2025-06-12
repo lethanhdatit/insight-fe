@@ -62,5 +62,23 @@
     { "value": 9, "label": "Vô thần" },
     { "value": 10, "label": "Tôn giáo khác" }
   ],
-  "common": {}
+  "common": {},
+  "auth": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "profile": "Trang cá nhân",
+    "settings": "Cài đặt",
+    "hello": "Xin chào, ",
+    "loading": "Đang tải...",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "passwordRepeat": "Nhập lại mật khẩu",
+    "cancel": "Hủy",
+    "errorRequired": "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.",
+    "errorUsernameLength": "Tên đăng nhập phải có ít nhất 3 ký tự.",
+    "errorUsernameSpace": "Tên đăng nhập không được chứa khoảng trắng.",
+    "errorPasswordLength": "Mật khẩu phải có ít nhất 6 ký tự.",
+    "errorPasswordRepeat": "Mật khẩu nhập lại không khớp."
+  }
 }

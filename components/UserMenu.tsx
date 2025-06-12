@@ -1,6 +1,8 @@
-"use client"
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import AuthPopup from "./AuthPopup";
+import LoadingOverlay from "./LoadingOverlay";
 
 // SVG icon Google
 const GoogleIcon = () => (
@@ -22,32 +24,93 @@ const FacebookIcon = () => (
   </svg>
 );
 
-export default function UserMenu({ user }: { user: { name: string } | null }) {
+export default function UserMenu({ dictionary }: { dictionary: any }) {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<{ username?: string; isGuest?: boolean } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showAuth, setShowAuth] = useState<null | "login" | "register">(null);
 
-  if (!user) {
+  const t = dictionary.auth;
+
+  // Lấy session từ API FE (client only)
+  useEffect(() => {
+    async function fetchSession() {
+      const res = await fetch("/api/auth/guest", { method: "POST", cache: "no-store" });
+      const data = await res.json();
+      if (data.accessToken) {
+        setUser({ username: data.username, isGuest: data.isGuest });
+      }
+    }
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    if (loading) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [loading]);
+
+  const handleLogout = async () => {
+    setLoading(true);
+    await fetch("/api/auth/logout", { method: "POST" });
+    setUser(null);
+    window.location.reload();
+  };
+
+  const handleAuthSuccess = async () => {
+    setLoading(true);
+    setShowAuth(null);
+    window.location.reload();
+  };
+
+  if (loading) {
+    return <LoadingOverlay />;
+  }
+
+  if (!user || user.isGuest) {
     return (
-      <div
-        className="
-          grid grid-cols-2 gap-2 w-full max-w-full
-          sm:flex sm:flex-wrap sm:gap-4 sm:justify-start sm:items-center
-        "
-      >
-        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition text-[11px] sm:text-xs md:text-sm">
-          Đăng nhập
-        </button>
-        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition bg-[var(--ancient-red)] text-white border-[var(--ancient-bronze)] text-[11px] sm:text-xs md:text-sm">
-          Đăng ký
-        </button>
-        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--jade-green)] text-[var(--jade-green)] text-[11px] sm:text-xs md:text-sm">
-          <GoogleIcon />
-          <span className="sm:inline px-1">Google</span>
-        </button>
-        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--bamboo-green)] text-[var(--bamboo-green)] text-[11px] sm:text-xs md:text-sm">
-          <FacebookIcon />
-          <span className="sm:inline px-1">Facebook</span>
-        </button>
-      </div>
+      <>
+        <div
+          className="
+            grid grid-cols-2 gap-2 w-full max-w-full
+            sm:flex sm:flex-wrap sm:gap-4 sm:justify-start sm:items-center
+          "
+        >
+          <button
+            className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition text-[11px] sm:text-xs md:text-sm"
+            onClick={() => setShowAuth("login")}
+          >
+            {t.login}
+          </button>
+          <button
+            className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition bg-[var(--ancient-red)] text-white border-[var(--ancient-bronze)] text-[11px] sm:text-xs md:text-sm"
+            onClick={() => setShowAuth("register")}
+          >
+            {t.register}
+          </button>
+          <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--jade-green)] text-[var(--jade-green)] text-[11px] sm:text-xs md:text-sm">
+            <GoogleIcon />
+            <span className="hidden sm:inline px-1">Google</span>
+          </button>
+          <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--bamboo-green)] text-[var(--bamboo-green)] text-[11px] sm:text-xs md:text-sm">
+            <FacebookIcon />
+            <span className="hidden sm:inline px-1">Facebook</span>
+          </button>
+        </div>
+        {showAuth && (
+          <AuthPopup
+            mode={showAuth}
+            dictionary={dictionary}
+            onClose={() => setShowAuth(null)}
+            onSuccess={handleAuthSuccess}
+          />
+        )}
+      </>
     );
   }
 
@@ -57,13 +120,18 @@ export default function UserMenu({ user }: { user: { name: string } | null }) {
         className="px-3 py-2 rounded ancient-button bg-[var(--ancient-cream)] text-[var(--ancient-red)] font-semibold shadow hover:ancient-glow transition text-sm md:text-base"
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="hidden sm:inline">Xin chào, </span>{user.name}
+        <span className="hidden sm:inline">{t.hello || "Xin chào, "}</span>{user.username}
       </button>
       {open && (
         <div className="absolute right-0 mt-2 w-48 bg-[var(--parchment)] border border-[var(--ancient-bronze)] shadow-lg rounded z-50">
-          <Link href="/profile" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">Trang cá nhân</Link>
-          <Link href="/settings" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">Cài đặt</Link>
-          <button className="block w-full text-left px-4 py-2 hover:bg-[var(--ancient-red)] hover:text-white rounded-b ancient-font">Đăng xuất</button>
+          <Link href="/profile" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">{t.profile || "Trang cá nhân"}</Link>
+          <Link href="/settings" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">{t.settings || "Cài đặt"}</Link>
+          <button
+            className="block w-full text-left px-4 py-2 hover:bg-[var(--ancient-red)] hover:text-white rounded-b ancient-font"
+            onClick={handleLogout}
+          >
+            {t.logout || "Đăng xuất"}
+          </button>
         </div>
       )}
     </div>

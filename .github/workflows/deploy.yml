@@ -117,7 +117,8 @@ jobs:
 
             # Run container on the new port
             export ACEAS=${{ secrets.API_CALL_ENCRYPTION_AES_SECRET }}
-            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT -e NEXT_PUBLIC_API_AES_SECRET=$ACEAS insight-fe:latest
+            export SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT -e NEXT_PUBLIC_API_AES_SECRET=$ACEAS -e SESSION_SECRET=$SESSION_SECRET insight-fe:latest
 
             # Health check
             timeout=30
