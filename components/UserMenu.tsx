@@ -4,7 +4,7 @@ import Link from "next/link";
 
 // SVG icon Google
 const GoogleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 48 48" className="inline-block mr-2">
+  <svg width="20" height="20" viewBox="0 0 48 48" className="inline-block md:mr-2">
     <g>
       <path fill="#fbc02d" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-11.3 7-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.1 8.1 3l6.1-6.1C34.5 5.5 29.6 3.5 24 3.5 12.7 3.5 3.5 12.7 3.5 24S12.7 44.5 24 44.5c11 0 20.5-8 20.5-20.5 0-1.4-.2-2.7-.4-4z"/>
       <path fill="#e53935" d="M6.3 14.1l6.6 4.8C15.1 16.1 19.2 13.5 24 13.5c3.1 0 5.9 1.1 8.1 3l6.1-6.1C34.5 5.5 29.6 3.5 24 3.5c-6.6 0-12.3 2.7-16.7 7.1z"/>
@@ -16,32 +16,36 @@ const GoogleIcon = () => (
 
 // SVG icon Facebook
 const FacebookIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 32 32" className="inline-block mr-2">
+  <svg width="20" height="20" viewBox="0 0 32 32" className="inline-block md:mr-2">
     <path fill="#1877f3" d="M32 16c0-8.837-7.163-16-16-16S0 7.163 0 16c0 7.982 5.84 14.584 13.438 15.854v-11.22H9.398v-4.634h4.04V12.41c0-4.007 2.393-6.22 6.058-6.22 1.754 0 3.584.313 3.584.313v3.953h-2.019c-1.989 0-2.607 1.236-2.607 2.504v3.01h4.437l-.71 4.634h-3.727v11.22C26.16 30.584 32 23.982 32 16z"/>
     <path fill="#fff" d="M22.69 20.634l.71-4.634h-4.437v-3.01c0-1.268.618-2.504 2.607-2.504h2.019V6.543s-1.83-.313-3.584-.313c-3.665 0-6.058 2.213-6.058 6.22v3.22h-4.04v4.634h4.04v11.22a16.06 16.06 0 0 0 4.924 0v-11.22h3.727z"/>
   </svg>
 );
 
-// Nhận props user, nếu null thì hiển thị nút đăng nhập/đăng ký
 export default function UserMenu({ user }: { user: { name: string } | null }) {
   const [open, setOpen] = useState(false);
 
   if (!user) {
     return (
-      <div className="flex gap-2">
-        <button className="ancient-button px-4 py-2 rounded shadow hover:ancient-glow transition">
+      <div
+        className="
+          grid grid-cols-2 gap-2 w-full max-w-full
+          sm:flex sm:flex-wrap sm:gap-4 sm:justify-start sm:items-center
+        "
+      >
+        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition text-[11px] sm:text-xs md:text-sm">
           Đăng nhập
         </button>
-        <button className="ancient-button px-4 py-2 rounded shadow hover:ancient-glow transition bg-[var(--ancient-red)] text-white border-[var(--ancient-bronze)]">
+        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition bg-[var(--ancient-red)] text-white border-[var(--ancient-bronze)] text-[11px] sm:text-xs md:text-sm">
           Đăng ký
         </button>
-        <button className="ancient-button px-4 py-2 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--jade-green)] text-[var(--jade-green)]">
+        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--jade-green)] text-[var(--jade-green)] text-[11px] sm:text-xs md:text-sm">
           <GoogleIcon />
-          Google
+          <span className="sm:inline px-1">Google</span>
         </button>
-        <button className="ancient-button px-4 py-2 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--bamboo-green)] text-[var(--bamboo-green)]">
+        <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--bamboo-green)] text-[var(--bamboo-green)] text-[11px] sm:text-xs md:text-sm">
           <FacebookIcon />
-          Facebook
+          <span className="sm:inline px-1">Facebook</span>
         </button>
       </div>
     );
@@ -50,13 +54,13 @@ export default function UserMenu({ user }: { user: { name: string } | null }) {
   return (
     <div className="relative">
       <button
-        className="px-4 py-2 rounded ancient-button bg-[var(--ancient-cream)] text-[var(--ancient-red)] font-semibold shadow hover:ancient-glow transition"
+        className="px-3 py-2 rounded ancient-button bg-[var(--ancient-cream)] text-[var(--ancient-red)] font-semibold shadow hover:ancient-glow transition text-sm md:text-base"
         onClick={() => setOpen((o) => !o)}
       >
-        Xin chào, {user.name}
+        <span className="hidden sm:inline">Xin chào, </span>{user.name}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-52 bg-[var(--parchment)] border border-[var(--ancient-bronze)] shadow-lg rounded z-50">
+        <div className="absolute right-0 mt-2 w-48 bg-[var(--parchment)] border border-[var(--ancient-bronze)] shadow-lg rounded z-50">
           <Link href="/profile" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">Trang cá nhân</Link>
           <Link href="/settings" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">Cài đặt</Link>
           <button className="block w-full text-left px-4 py-2 hover:bg-[var(--ancient-red)] hover:text-white rounded-b ancient-font">Đăng xuất</button>

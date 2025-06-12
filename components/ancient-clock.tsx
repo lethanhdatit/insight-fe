@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 
 interface MysticalFormProps {
   dictionary: any;
+  className?: string;
 }
 
-export default function AncientClock({ dictionary }: MysticalFormProps) {
+export default function AncientClock({ dictionary, className }: MysticalFormProps) {
   const [time, setTime] = useState(new Date());
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -22,30 +23,8 @@ export default function AncientClock({ dictionary }: MysticalFormProps) {
       setTime(new Date());
     }, 1000);
 
-    // Play time-based ambient sounds
-    if (soundEnabled) {
-      const hour = time.getHours();
-      let soundFile = "";
-
-      if (hour >= 6 && hour < 12) soundFile = "/sounds/morning-birds.mp3";
-      else if (hour >= 12 && hour < 18)
-        soundFile = "/sounds/afternoon-wind.mp3";
-      else if (hour >= 18 && hour < 22)
-        soundFile = "/sounds/evening-temple.mp3";
-      else soundFile = "/sounds/night-crickets.mp3";
-
-      try {
-        const audio = new Audio(soundFile);
-        audio.volume = 0.5;
-        audio.loop = true;
-        audio.play().catch(() => {});
-      } catch (error) {
-        // Ignore audio errors
-      }
-    }
-
     return () => clearInterval(timer);
-  }, [mounted, soundEnabled]);
+  }, [mounted]);
 
   const getTimeOfDay = () => {
     const hour = time.getHours();
@@ -82,14 +61,19 @@ export default function AncientClock({ dictionary }: MysticalFormProps) {
     return zodiacSymbols[Math.floor(hour / 2)];
   };
 
+  // Đảm bảo hình tròn, cân đối, responsive
+  let cln = `ancient-clock flex flex-col items-center justify-center aspect-square rounded-full overflow-hidden ${className || ""}`;
+
   if (!mounted) {
     return (
-      <div className="ancient-clock w-32 h-32 flex items-center justify-center">
-        <div className="text-center">
-          <div className="calligraphy-font text-lg text-amber-800">
+      <div className={cln}>
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          <div className="calligraphy-font text-base md:text-lg text-amber-800">
             --:--:--
           </div>
-          <div className="ancient-font text-sm text-amber-600">Loading...</div>
+          <div className="ancient-font text-xs md:text-sm text-amber-600">
+            Loading...
+          </div>
         </div>
       </div>
     );
@@ -97,19 +81,28 @@ export default function AncientClock({ dictionary }: MysticalFormProps) {
 
   return (
     <div
-      className="ancient-clock w-32 h-32 flex items-center justify-center cursor-pointer hover:ancient-glow transition-all duration-300 relative"
+      className={cln}
       onClick={() => setSoundEnabled(!soundEnabled)}
+      style={{ cursor: "pointer" }}
     >
       <div className="zodiac-ring"></div>
-      <div className="text-center">
-        <div className="text-2xl mb-1">{getZodiacSymbol()}</div>
-        <div className="calligraphy-font text-sm font-bold text-amber-900">
+      <div className="flex flex-col items-center justify-center w-full h-full px-1">
+        {/* Zodiac icon */}
+        <div className="text-base sm:text-lg md:text-xl lg:text-2xl mb-0.5 leading-none">
+          {getZodiacSymbol()}
+        </div>
+        {/* Time */}
+        <div className="text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-amber-900 leading-tight">
           {formatTime(time)}
         </div>
-        <div className="ancient-font text-xs text-amber-700">
+        {/* Time of day */}
+        <div className="ancient-font text-[8px] sm:text-[10px] md:text-xs lg:text-sm text-amber-700 leading-tight text-center max-w-full truncate">
           {getTimeOfDay()}
         </div>
-        <div className="text-xs mt-1">{soundEnabled ? "🔊" : "🔇"}</div>
+        {/* Sound icon */}
+        <div className="text-[10px] sm:text-xs mt-0.5 leading-none">
+          {soundEnabled ? "🔊" : "🔇"}
+        </div>
       </div>
     </div>
   );
