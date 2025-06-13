@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import CryptoJS from "crypto-js";
 
 type Handler<T = any> = (
-  data: T,
+  data: T | undefined,
   req: NextRequest
 ) => Promise<NextResponse> | NextResponse;
 
@@ -15,6 +15,9 @@ export function withDecryption<T = any>(
     try {
       const secret = options?.secret || process.env.NEXT_PUBLIC_API_AES_SECRET!;
       const encrypted = await req.text();
+      if (!encrypted){
+        return await handler(undefined, req);
+      }
 
       const bytes = CryptoJS.AES.decrypt(encrypted, secret);
       const decryptedText = bytes.toString(CryptoJS.enc.Utf8);

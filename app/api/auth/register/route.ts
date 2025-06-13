@@ -9,7 +9,7 @@ export const POST = async (req: NextRequest) => {
 
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-  const res = await fetch("https://api.insight.ai.vn/api/account/register", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BE_BASE_URL}/api/account/register`, {
     method: "POST",
     headers: { 
         "Content-Type": "application/json" ,

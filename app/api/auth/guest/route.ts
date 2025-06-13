@@ -7,7 +7,7 @@ export const POST = async (req: NextRequest) => {
 
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-  const res = await fetch("https://api.insight.ai.vn/api/account/init", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BE_BASE_URL}/api/account/init`, {
     method: "POST",
     headers: {
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),

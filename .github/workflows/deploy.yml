@@ -23,6 +23,10 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: Override .env from secret
+        run: |
+          echo "${{ secrets.ENV_PRODUCTION_BASE64 }}" | base64 -d > .env
+      
       - name: Build Docker image
         run: |
           docker-compose -f docker-compose.yml build
@@ -118,7 +122,7 @@ jobs:
             # Run container on the new port
             export ACEAS=${{ secrets.API_CALL_ENCRYPTION_AES_SECRET }}
             export SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT -e NEXT_PUBLIC_API_AES_SECRET=$ACEAS -e SESSION_SECRET=$SESSION_SECRET insight-fe:latest
+            docker run -d -p $NEW_PORT:6500 --name insight-fe-temp -e INSIGHT_FE_PORT=$NEW_PORT insight-fe:latest
 
             # Health check
             timeout=30

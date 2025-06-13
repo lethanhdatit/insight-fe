@@ -95,5 +95,13 @@
     "english": "English",
     "saving": "Saving...",
     "selectedMark": "✓"
+  },
+  "profile": {
+    "title": "Profile",
+    "greeting": "Hello, {username}!"
+  },
+  "settings": {
+    "title": "Settings",
+    "save": "Save changes"
   }
 }

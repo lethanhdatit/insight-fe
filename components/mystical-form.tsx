@@ -14,8 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AncientLoading from "./ancient-loading";
-import AncientResultDisplay from "./ancient-result-display";
 import { apiCall } from "@/helpers/apiHelper";
+import { getLangFromSession } from "@/lib/server";
 
 interface FormData {
   firstName: string;
@@ -45,8 +45,6 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [showResult, setShowResult] = useState(false);
 
   // Create a ref to store the audio object
   const audioAncientBellRef = useRef<HTMLAudioElement | null>(null);
@@ -55,15 +53,12 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
     e.preventDefault();
     setIsLoading(true);
 
+    const lang = await getLangFromSession();
+
     try {
       const data = await apiCall("/api/theology", "POST", formData, true);
 
-      setResult(data);
-
-      setTimeout(() => {
-        setIsLoading(false);
-        setShowResult(true);
-      }, 1000);
+      window.location.href = `/${lang}/theology/result/${data.id}`;
     } catch (error) {
       console.error("Error:", error);
       setIsLoading(false);
@@ -101,10 +96,6 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  if (showResult && result) {
-    return <AncientResultDisplay result={result} dictionary={dictionary} />;
-  }
-
   if (isLoading) {
     return <AncientLoading dictionary={dictionary} />;
   }
@@ -112,7 +103,10 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
   return (
     <div className="w-full min-w-6xl max-w-8xl mx-auto">
       {/* Ancient Book Design */}
-      <div className="ancient-book rounded-lg p-8 book-spine scroll-unfurl">
+      <form
+        onSubmit={handleSubmit}
+        className="ancient-book rounded-lg p-8 book-spine scroll-unfurl"
+      >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Page */}
           <div className="parchment rounded-lg p-6">
@@ -282,49 +276,44 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
           </div>
 
           {/* Right Page */}
-          <div className="parchment rounded-lg p-6">
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 h-full flex flex-col"
-            >
-              <div className="text-center border-b-2 border-amber-600 pb-4">
-                <h2 className="calligraphy-font text-2xl text-amber-800 font-bold">                  
-                  {dictionary.form.dreamTitle}
-                </h2>
-              </div>
+          <div className="parchment rounded-lg p-6 flex flex-col h-full">
+            <div className="text-center border-b-2 border-amber-600 pb-4">
+              <h2 className="calligraphy-font text-2xl text-amber-800 font-bold">                  
+                {dictionary.form.dreamTitle}
+              </h2>
+            </div>
 
-              {/* Dream Description */}
-              <div className="space-y-2 flex-1">
-                <Label
-                  htmlFor="dreaming"
-                  className="ancient-font text-amber-800 font-medium"
-                >
-                  {dictionary.form.dreamDescription}
-                </Label>
-                <Textarea
-                  id="dreaming"
-                  value={formData.dreaming}
-                  onChange={(e) =>
-                    handleInputChange("dreaming", e.target.value)
-                  }
-                  placeholder={dictionary.form.dreamPlaceholder}
-                  className="ancient-input ancient-font min-h-64 resize-none"
-                />
-              </div>
+            {/* Dream Description */}
+            <div className="space-y-2 flex-1">
+              <Label
+                htmlFor="dreaming"
+                className="ancient-font text-amber-800 font-medium"
+              >
+                {dictionary.form.dreamDescription}
+              </Label>
+              <Textarea
+                id="dreaming"
+                value={formData.dreaming}
+                onChange={(e) =>
+                  handleInputChange("dreaming", e.target.value)
+                }
+                placeholder={dictionary.form.dreamPlaceholder}
+                className="ancient-input ancient-font min-h-64 resize-none"
+              />
+            </div>
 
-              {/* Submit Button */}
-              <div className="text-center pt-4">
-                <Button
-                  type="submit"
-                  className="ancient-button ancient-font text-xl py-4 px-12 rounded-lg"
-                >
-                  🔮 {dictionary.form.submitButton} 🔮
-                </Button>
-              </div>
-            </form>
+            {/* Submit Button */}
+            <div className="text-center pt-4 mt-auto">
+              <Button
+                type="submit"
+                className="ancient-button ancient-font text-xl py-4 px-12 rounded-lg"
+              >
+                🔮 {dictionary.form.submitButton} 🔮
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

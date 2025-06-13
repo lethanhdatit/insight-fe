@@ -95,5 +95,13 @@
     "english": "English",
     "saving": "Đang lưu...",
     "selectedMark": "✓"
+  },
+  "profile": {
+    "title": "Trang cá nhân",
+    "greeting": "Xin chào, {username}!"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "save": "Lưu thay đổi"
   }
 }

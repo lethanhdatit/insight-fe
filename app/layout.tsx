@@ -6,6 +6,9 @@ import LanguageSelectPopup from "@/components/LanguageSelectPopup";
 import Footer from "@/components/Footer";
 import { Locale } from "@/lib/i18n/locales";
 import { getDictionary } from "@/app/[lang]/dictionaries";
+import HeaderSpacer from "@/components/HeaderSpacer";
+import UserMenu from "@/components/UserMenu";
+import AncientClock from "@/components/ancient-clock";
 
 const inter = Inter({ subsets: ["latin"] });
 const cinzel = Cinzel({
@@ -113,9 +116,87 @@ export default async function RootLayout({
         {showLangPopup && (
           <LanguageSelectPopup currentLang={lang} dictionary={dictionary} />
         )}
-        {children}
+
+        <header
+          id="main-header"
+          className="fixed top-0 left-0 w-full z-30 bg-[var(--parchment)]/90 backdrop-blur flex items-center px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-3 shadow ancient-glow h-auto"
+          style={{ minHeight: "unset", maxHeight: "none" }}
+        >
+          <div className="flex items-center">
+            <UserMenu dictionary={dictionary} />
+          </div>
+          <div className="flex-1" />
+          <div className="flex items-center h-full">
+            <AncientClock
+              dictionary={dictionary}
+              className="w-20 h-20 md:w-28 md:h-28 rounded-full"
+            />
+          </div>
+        </header>
+
+        <HeaderSpacer />
+
+        <main id="main-content" className="min-h-screen relative">
+          <div className="absolute top-20 left-12 text-6xl opacity-20 floating-ancient">
+            🏮
+          </div>
+
+          <div
+            className="absolute bottom-12 right-12 text-5xl opacity-20 floating-ancient"
+            style={{ animationDelay: "2s" }}
+          >
+            🐉
+          </div>
+
+          {["🐮", "🐯", "🐱", "🐍", "🐴", "🐑", "🐵", "🐔", "🐶", "🐷"].map(
+            (icon, index) => {
+              const position = generateRandomPosition();
+              return (
+                <div
+                  key={index}
+                  className="absolute text-5xl opacity-20 floating-ancient"
+                  style={{
+                    ...position,
+                    animationDelay: generateRandomDelay(),
+                  }}
+                >
+                  {icon}
+                </div>
+              );
+            }
+          )}
+
+          <div
+            className="absolute top-1/2 left-14 text-4xl opacity-20 floating-ancient"
+            style={{ animationDelay: "4s" }}
+          >
+            ☯️
+          </div>
+
+          <div
+            className="absolute bottom-1/2 right-12 text-4xl opacity-20 floating-ancient"
+            style={{ animationDelay: "4s" }}
+          >
+            🐭
+          </div>
+          {children}
+        </main>
+
         <Footer lang={lang} dictionary={dictionary} />
       </body>
     </html>
   );
 }
+
+const spreadFactor = 0.85;
+
+const generateRandomPosition = () => {
+  const top = Math.random() * (90 - spreadFactor * 20) + spreadFactor * 10;
+  const left = Math.random() * (90 - spreadFactor * 20) + spreadFactor * 10;
+  return { top: `${top}%`, left: `${left}%` };
+};
+
+const generateRandomDelay = () => {
+  const delay = Math.random() * 7 + 1;
+  return `${delay}s`;
+};

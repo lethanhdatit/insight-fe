@@ -6,6 +6,7 @@ export interface UserSession {
   isGuest?: boolean;
   username?: string;
   lang?: Locale;
+  theologyResult?: any;
 }
 
 export const sessionOptions: SessionOptions = {

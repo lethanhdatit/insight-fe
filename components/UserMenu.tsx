@@ -44,7 +44,7 @@ export default function UserMenu(props: UserMenuProps) {
   const [user, setUser] = useState<{ username?: string; isGuest?: boolean } | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAuth, setShowAuth] = useState<null | "login" | "register">(null);
-  const [lang, setLang] = useState<string>("");
+  const [lang, setLang] = useState<any>("");
 
   const t = props.dictionary.auth;
 
