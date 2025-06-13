@@ -13,6 +13,7 @@
     "religionPlaceholder": "Chọn tôn giáo",
     "location": "Địa điểm hiện tại",
     "locationExample": "Ví dụ: Quận 1, TP.HCM",
+    "dreamTitle": "Giấc Mơ Huyền Bí",
     "dreamDescription": "Mô tả giấc mơ",
     "dreamPlaceholder": "Hãy thuật lại những giấc mơ huyền bí của bạn...",
     "submitButton": "Khởi Mệnh",
@@ -80,5 +81,19 @@
     "errorUsernameSpace": "Tên đăng nhập không được chứa khoảng trắng.",
     "errorPasswordLength": "Mật khẩu phải có ít nhất 6 ký tự.",
     "errorPasswordRepeat": "Mật khẩu nhập lại không khớp."
+  },
+  "footer": {
+    "language": "Ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "English",
+    "copyright": "© {year} Insight",
+    "loading": "Đang đổi ngôn ngữ..."
+  },
+  "languagePopup": {
+    "title": "Chọn ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "English",
+    "saving": "Đang lưu...",
+    "selectedMark": "✓"
   }
 }

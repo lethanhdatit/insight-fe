@@ -1,9 +1,11 @@
 import { SessionOptions } from "iron-session";
+import { Locale } from '@/lib/i18n/locales';
 
 export interface UserSession {
   accessToken?: string;
   isGuest?: boolean;
   username?: string;
+  lang?: Locale;
 }
 
 export const sessionOptions: SessionOptions = {

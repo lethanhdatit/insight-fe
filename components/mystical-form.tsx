@@ -288,8 +288,8 @@ export default function MysticalForm({ dictionary }: MysticalFormProps) {
               className="space-y-6 h-full flex flex-col"
             >
               <div className="text-center border-b-2 border-amber-600 pb-4">
-                <h2 className="calligraphy-font text-2xl text-amber-800 font-bold">
-                  Giấc Mơ Huyền Bí
+                <h2 className="calligraphy-font text-2xl text-amber-800 font-bold">                  
+                  {dictionary.form.dreamTitle}
                 </h2>
               </div>
 

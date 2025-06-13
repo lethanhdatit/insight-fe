@@ -61,7 +61,6 @@ export default function AncientClock({ dictionary, className }: MysticalFormProp
     return zodiacSymbols[Math.floor(hour / 2)];
   };
 
-  // Đảm bảo hình tròn, cân đối, responsive
   let cln = `ancient-clock flex flex-col items-center justify-center aspect-square rounded-full overflow-hidden ${className || ""}`;
 
   if (!mounted) {
@@ -87,19 +86,15 @@ export default function AncientClock({ dictionary, className }: MysticalFormProp
     >
       <div className="zodiac-ring"></div>
       <div className="flex flex-col items-center justify-center w-full h-full px-1">
-        {/* Zodiac icon */}
         <div className="text-base sm:text-lg md:text-xl lg:text-2xl mb-0.5 leading-none">
           {getZodiacSymbol()}
         </div>
-        {/* Time */}
         <div className="text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-amber-900 leading-tight">
           {formatTime(time)}
         </div>
-        {/* Time of day */}
         <div className="ancient-font text-[8px] sm:text-[10px] md:text-xs lg:text-sm text-amber-700 leading-tight text-center max-w-full truncate">
           {getTimeOfDay()}
         </div>
-        {/* Sound icon */}
         <div className="text-[10px] sm:text-xs mt-0.5 leading-none">
           {soundEnabled ? "🔊" : "🔇"}
         </div>

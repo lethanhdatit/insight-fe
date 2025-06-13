@@ -1,0 +1,99 @@
+{
+  "title": "Discover Your Destiny",
+  "subtitle": "A journey to explore spiritual mysteries through ancient wisdom",
+  "form": {
+    "title": "Personal Information",
+    "firstName": "First Name",
+    "middleName": "Middle Name",
+    "lastName": "Last Name",
+    "dateOfBirth": "Date of Birth",
+    "gender": "Gender",
+    "genderPlaceholder": "Select gender",
+    "religion": "Religion",
+    "religionPlaceholder": "Select religion",
+    "location": "Current Location",
+    "locationExample": "E.g.: District 1, Ho Chi Minh City",
+    "dreamTitle": "The Mysterious Dream",
+    "dreamDescription": "Dream Description",
+    "dreamPlaceholder": "Describe your mystical dreams...",
+    "submitButton": "Start Destiny",
+    "loading": "Consulting the heavens...",
+    "loadingSub": "The heavens are being consulted..."
+  },
+  "results": {
+    "yourNumbers": "Destiny Numbers",
+    "detail": "Decoding Details",
+    "warning": "Heavenly Warning",
+    "advice": "Spiritual Advice",
+    "summary": "Destiny Summary",
+    "skipDraw": "Skip animation",
+    "numberTitle": "Your destiny numbers",
+    "numberSubTitle": "Destiny Decoding",
+    "reSubmitButton": "Discover again",
+    "loading": "Loading results...",
+    "error": "An error occurred while consulting the heavens. Please try again."
+  },
+  "clock": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night"
+  },
+  "genders": [
+    { "value": 1, "label": "Male" },
+    { "value": 2, "label": "Female" },
+    { "value": 3, "label": "Non-binary" },
+    { "value": 4, "label": "Transgender Male" },
+    { "value": 5, "label": "Transgender Female" },
+    { "value": 6, "label": "Gender Fluid" },
+    { "value": 7, "label": "Agender" },
+    { "value": 8, "label": "Two Spirits" },
+    { "value": 9, "label": "Intersex" },
+    { "value": 10, "label": "Other" }
+  ],
+  "religions": [
+    { "value": 1, "label": "Buddhism" },
+    { "value": 2, "label": "Catholicism" },
+    { "value": 3, "label": "Protestantism" },
+    { "value": 4, "label": "Islam" },
+    { "value": 5, "label": "Judaism" },
+    { "value": 6, "label": "Hinduism" },
+    { "value": 7, "label": "Confucianism" },
+    { "value": 8, "label": "Taoism" },
+    { "value": 9, "label": "Atheism" },
+    { "value": 10, "label": "Other religion" }
+  ],
+  "common": {},
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings",
+    "hello": "Hi, ",
+    "loading": "Loading...",
+    "username": "Username",
+    "password": "Password",
+    "passwordRepeat": "Repeat password",
+    "cancel": "Cancel",
+    "errorRequired": "Please enter both username and password.",
+    "errorUsernameLength": "Username must be at least 3 characters.",
+    "errorUsernameSpace": "Username cannot contain spaces.",
+    "errorPasswordLength": "Password must be at least 6 characters.",
+    "errorPasswordRepeat": "Passwords do not match."
+  },
+  "footer": {
+    "language": "Language",
+    "vietnamese": "Vietnamese",
+    "english": "English",
+    "copyright": "© {year} Insight",
+    "loading": "Changing language..."
+  },
+  "languagePopup": {
+    "title": "Select language",
+    "vietnamese": "Vietnamese",
+    "english": "English",
+    "saving": "Saving...",
+    "selectedMark": "✓"
+  }
+}

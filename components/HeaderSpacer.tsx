@@ -24,7 +24,6 @@ export default function HeaderSpacer() {
     
     function onScroll() {
       const scrollY = window.scrollY || window.pageYOffset;
-      // Khi ở top, margin-top = height; khi scroll xuống, giảm dần về 0 (tối đa là height)
       const mt = Math.max(height - scrollY, 0);
       if (main) {
         main.style.marginTop = `${height}px`;
@@ -38,6 +37,5 @@ export default function HeaderSpacer() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [height]);
 
-  // Không render gì cả, chỉ để đo và set margin
   return null;
 }

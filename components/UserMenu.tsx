@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import AuthPopup from "./AuthPopup";
 import LoadingOverlay from "./LoadingOverlay";
+import { getLangFromSession } from "@/lib/server";
 
 // SVG icon Google
 const GoogleIcon = () => (
@@ -24,15 +25,29 @@ const FacebookIcon = () => (
   </svg>
 );
 
-export default function UserMenu({ dictionary }: { dictionary: any }) {
+interface UserMenuProps {
+  dictionary: {
+    auth: {
+      login: string;
+      register: string;
+      hello?: string;
+      profile?: string;
+      settings?: string;
+      logout?: string;
+    };
+    [key: string]: any;
+  };
+}
+
+export default function UserMenu(props: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<{ username?: string; isGuest?: boolean } | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAuth, setShowAuth] = useState<null | "login" | "register">(null);
+  const [lang, setLang] = useState<string>("");
 
-  const t = dictionary.auth;
+  const t = props.dictionary.auth;
 
-  // Lấy session từ API FE (client only)
   useEffect(() => {
     async function fetchSession() {
       const res = await fetch("/api/auth/guest", { method: "POST", cache: "no-store" });
@@ -68,6 +83,14 @@ export default function UserMenu({ dictionary }: { dictionary: any }) {
     window.location.reload();
   };
 
+  useEffect(() => {
+    async function fetchLang() {
+      const l = await getLangFromSession();
+      setLang(l);
+    }
+    fetchLang();
+  }, []);
+
   if (loading) {
     return <LoadingOverlay />;
   }
@@ -95,17 +118,17 @@ export default function UserMenu({ dictionary }: { dictionary: any }) {
           </button>
           <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--jade-green)] text-[var(--jade-green)] text-[11px] sm:text-xs md:text-sm">
             <GoogleIcon />
-            <span className="hidden sm:inline px-1">Google</span>
+            <span className="sm:inline px-1">Google</span>
           </button>
           <button className="ancient-button h-7 sm:h-8 md:h-12 min-w-[32px] w-full sm:w-auto px-2 py-1 sm:px-3 sm:py-1.5 rounded shadow hover:ancient-glow transition flex items-center bg-[var(--parchment)] border border-[var(--bamboo-green)] text-[var(--bamboo-green)] text-[11px] sm:text-xs md:text-sm">
             <FacebookIcon />
-            <span className="hidden sm:inline px-1">Facebook</span>
+            <span className="sm:inline px-1">Facebook</span>
           </button>
         </div>
         {showAuth && (
           <AuthPopup
             mode={showAuth}
-            dictionary={dictionary}
+            dictionary={props.dictionary}
             onClose={() => setShowAuth(null)}
             onSuccess={handleAuthSuccess}
           />
@@ -123,9 +146,9 @@ export default function UserMenu({ dictionary }: { dictionary: any }) {
         <span className="hidden sm:inline">{t.hello || "Xin chào, "}</span>{user.username}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-48 bg-[var(--parchment)] border border-[var(--ancient-bronze)] shadow-lg rounded z-50">
-          <Link href="/profile" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">{t.profile || "Trang cá nhân"}</Link>
-          <Link href="/settings" className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">{t.settings || "Cài đặt"}</Link>
+        <div className="absolute left-0 right-auto sm:right-0 sm:left-auto mt-2 w-48 bg-[var(--parchment)] border border-[var(--ancient-bronze)] shadow-lg rounded z-50">
+          <Link href={`/${lang}/profile`} className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">{t.profile || "Trang cá nhân"}</Link>
+          <Link href={`/${lang}/settings`} className="block px-4 py-2 hover:bg-[var(--ancient-gold)] hover:text-[var(--ink-black)] ancient-font">{t.settings || "Cài đặt"}</Link>
           <button
             className="block w-full text-left px-4 py-2 hover:bg-[var(--ancient-red)] hover:text-white rounded-b ancient-font"
             onClick={handleLogout}

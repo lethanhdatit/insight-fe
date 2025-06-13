@@ -11,23 +11,19 @@ export default async function HomePage({
   params: { lang: Locale };
 }) {
   const { lang } = await params;
-  const dictionary = await getDictionary(lang);  
+  const dictionary = await getDictionary(lang);
 
   return (
     <>
-      {/* Header */}
       <header
         id="main-header"
         className="fixed top-0 left-0 w-full z-30 bg-[var(--parchment)]/90 backdrop-blur flex items-center px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-3 shadow ancient-glow h-auto"
         style={{ minHeight: "unset", maxHeight: "none" }}
       >
-        {/* Bên trái */}
         <div className="flex items-center">
           <UserMenu dictionary={dictionary} />
         </div>
-        {/* Khoảng trống ở giữa */}
         <div className="flex-1" />
-        {/* Bên phải */}
         <div className="flex items-center h-full">
           <AncientClock
             dictionary={dictionary}
@@ -36,13 +32,11 @@ export default async function HomePage({
         </div>
       </header>
 
-      {/* Spacer để set margin-top cho main */}
       <HeaderSpacer />
 
       <main
         id="main-content"
         className="min-h-screen relative"
-        // Xóa style marginTop cứng!
       >
         <div className="absolute top-20 left-12 text-6xl opacity-20 floating-ancient">
           🏮
@@ -87,7 +81,6 @@ export default async function HomePage({
           🐭
         </div>
 
-        {/* Main Content */}
         <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-12">
             <h1 className="ancient-font text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-700 via-orange-600 to-yellow-600 ancient-text-glow mb-4">
@@ -98,7 +91,6 @@ export default async function HomePage({
             </p>
           </div>
 
-          {/* Ancient Book Container */}
           <div className="flex justify-center w-full">
             <MysticalForm dictionary={dictionary} />
           </div>
