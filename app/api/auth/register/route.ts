@@ -7,13 +7,21 @@ export const POST = async (req: NextRequest) => {
   const session = await getSession();
   const accessToken = session.accessToken;
 
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  if(process.env.NODE_ENV !== 'production')
+     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+  const userAgent = req.headers.get("user-agent");
+  const referer = req.headers.get("referer");
+  const origin = req.headers.get("origin");
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BE_BASE_URL}/api/account/register`, {
     method: "POST",
     headers: { 
         "Content-Type": "application/json" ,
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...(userAgent ? { "user-agent": userAgent } : {}),
+        ...(referer ? { referer } : {}),
+        ...(origin ? { origin } : {}),
     },
     body: JSON.stringify({ username, password }),
   });  

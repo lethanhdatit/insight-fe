@@ -8,6 +8,10 @@ export const POST = withDecryption(async (body, req: NextRequest) => {
     const session = await getSession();
     const accessToken = session.accessToken;
 
+    const userAgent = req.headers.get("user-agent");
+    const referer = req.headers.get("referer");
+    const origin = req.headers.get("origin");
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BE_BASE_URL}/api/LuckyNumber/theology`,
       {
@@ -16,6 +20,9 @@ export const POST = withDecryption(async (body, req: NextRequest) => {
           accept: "*/*",
           "Content-Type": "application/json",
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          ...(userAgent ? { "user-agent": userAgent } : {}),
+          ...(referer ? { referer } : {}),
+          ...(origin ? { origin } : {}),
         },
         body: JSON.stringify(body),
       }
@@ -23,8 +30,7 @@ export const POST = withDecryption(async (body, req: NextRequest) => {
 
     const data = await response.json();
 
-    if (!response.ok) 
-      throw new Error(data[0].description);
+    if (!response.ok) throw new Error(data[0].description);
 
     const secret = process.env.NEXT_PUBLIC_API_AES_SECRET!;
     return encryptResponse(data.data, secret);
@@ -42,6 +48,10 @@ export const GET = withDecryption(async (_body, req: NextRequest) => {
     const accessToken = session.accessToken;
     const id = req.nextUrl.searchParams.get("id");
 
+    const userAgent = req.headers.get("user-agent");
+    const referer = req.headers.get("referer");
+    const origin = req.headers.get("origin");
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BE_BASE_URL}/api/LuckyNumber/theology/${id}`,
       {
@@ -50,6 +60,9 @@ export const GET = withDecryption(async (_body, req: NextRequest) => {
           accept: "*/*",
           "Content-Type": "application/json",
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          ...(userAgent ? { "user-agent": userAgent } : {}),
+          ...(referer ? { referer } : {}),
+          ...(origin ? { origin } : {}),
         },
       }
     );
