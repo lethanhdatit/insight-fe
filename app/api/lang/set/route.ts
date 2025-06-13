@@ -14,7 +14,7 @@ export const POST = async (req: NextRequest) => {
     callbackUrl = formData.get("callbackUrl")?.toString() || "/";
   }
   const session = await getSession();
-  session.lang = lang;
+  session.lang = lang as any;
   await session.save();
   
   return NextResponse.json({ success: true });

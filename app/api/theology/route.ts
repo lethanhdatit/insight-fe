@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { withDecryption } from "@/lib/api/withDecryption";
 import { getSession } from "@/lib/server";
+import { encryptResponse } from "@/lib/api/encryptResponse";
 
 export const POST = withDecryption(async (body, req: NextRequest) => {
   try {
@@ -22,9 +23,11 @@ export const POST = withDecryption(async (body, req: NextRequest) => {
 
     const data = await response.json();
 
-    if (!response.ok) throw new Error(data[0].description);
+    if (!response.ok) 
+      throw new Error(data[0].description);
 
-    return NextResponse.json(data.data);
+    const secret = process.env.NEXT_PUBLIC_API_AES_SECRET!;
+    return encryptResponse(data.data, secret);
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch theology data" },
@@ -57,7 +60,8 @@ export const GET = withDecryption(async (_body, req: NextRequest) => {
       throw new Error("API request failed");
     }
 
-    return NextResponse.json(data.data);
+    const secret = process.env.NEXT_PUBLIC_API_AES_SECRET!;
+    return encryptResponse(data.data, secret);
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch theology data" },

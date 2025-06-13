@@ -26,6 +26,13 @@ export async function apiCall(
     }
 
     const data = await response.json();
+
+    if (data && data.encrypted) {
+      const bytes = CryptoJS.AES.decrypt(data.encrypted, process.env.NEXT_PUBLIC_API_AES_SECRET!);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      return JSON.parse(decrypted);
+    }
+
     return data;
   } catch (error) {
     console.error("API Error:", error);

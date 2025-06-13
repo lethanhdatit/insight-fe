@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AncientResultDisplay from "@/components/ancient-result-display";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { useRouter } from "next/navigation";
+import { apiCall } from "@/helpers/apiHelper";
 
 export default function TheologyResultClient({
   lang,
@@ -23,11 +24,10 @@ export default function TheologyResultClient({
       return;
     }
     setLoading(true);
-    fetch(`/api/theology?id=${id}`, { method: "GET" })
+    apiCall(`/api/theology?id=${id}`, "GET", null, true)
       .then(async (res) => {
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        setResult(data);
+        if (res.error) throw new Error();
+        setResult(res);
       })
       .catch(() => {
         router.replace(`/${lang}`);

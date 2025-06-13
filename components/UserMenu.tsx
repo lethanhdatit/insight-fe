@@ -4,6 +4,7 @@ import Link from "next/link";
 import AuthPopup from "./AuthPopup";
 import LoadingOverlay from "./LoadingOverlay";
 import { getLangFromSession } from "@/lib/server";
+import { apiCall } from "@/helpers/apiHelper";
 
 // SVG icon Google
 const GoogleIcon = () => (
@@ -50,8 +51,7 @@ export default function UserMenu(props: UserMenuProps) {
 
   useEffect(() => {
     async function fetchSession() {
-      const res = await fetch("/api/auth/guest", { method: "POST", cache: "no-store" });
-      const data = await res.json();
+      const data = await apiCall("/api/auth/session", "POST", null, true );
       if (data.accessToken) {
         setUser({ username: data.username, isGuest: data.isGuest });
       }
