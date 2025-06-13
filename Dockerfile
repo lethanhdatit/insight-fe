@@ -25,7 +25,8 @@ RUN npm run build
 RUN mkdir -p .next/standalone \
     && cp -r public .next/standalone/ \
     && cp -r .next/static .next/standalone/.next/ \
-    && cp .env .next/standalone/
+    && cp .env .next/standalone/ \
+    && cp .env .next/standalone/.next/
 
 RUN cp -r .next/standalone/. /app
 
@@ -34,8 +35,6 @@ WORKDIR /app
 RUN rm -rf temp
 
 RUN ls -la
-
-RUN cat .env
 
 RUN ls -la ./.next
 
